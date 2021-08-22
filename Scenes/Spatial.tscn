@@ -7,11 +7,11 @@
 
 [sub_resource type="BoxShape" id=2]
 
-[node name="Spatial" type="Spatial"]
+[node name="GameWorld" type="Spatial"]
 script = ExtResource( 1 )
 
 [node name="PlayerNode" parent="." instance=ExtResource( 2 )]
-transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.284031, 0 )
+transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.00240111, 0.293881, -0.00392723 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 2.98735, 0, 0, 0, 0.112402, 0, 0, 0, 2.45296, 0, 0, 0 )
