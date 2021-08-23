@@ -2,23 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="96687559-e998-4472-8229-6ac8ecdf50c4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BrackeysGameJam2021.2/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BrackeysGameJam2021.2.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BrackeysGameJam2021.2.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BrackeysGameJam2021.2.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prefabs/Bullet.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prefabs/PlayerNode.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scenes/Spatial.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Bullet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/LevelScript.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/PlayerNode.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Textures/Crosshair.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Textures/Crosshair.png.import" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/default_env.tres" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/icon.png.import" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project.godot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BrackeysGameJam2021.2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BrackeysGameJam2021.2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Player.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerUI.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/PlayerUI.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/TestScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/TestScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PlayerBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerBehaviour.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PlayerUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerUi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Crosshair.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/Crosshair.png.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,12 +20,13 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/PlayerUi.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@1.0.2/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
       <option value="$PROJECT_DIR$/Assets/Scripts/Bullet.cs" />
-      <option value="$PROJECT_DIR$/Assets/Scripts/PlayerUi.cs" />
       <option value="$PROJECT_DIR$/Assets/Scripts/PlayerBehaviour.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/PlayerUi.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1x89rqobpFgOk6TayebrLrNabdK" />
@@ -66,10 +57,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="11688">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="11688" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -85,7 +76,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1629726052430</updated>
-      <workItem from="1629726057085" duration="6985000" />
+      <workItem from="1629726057085" duration="9989000" />
     </task>
     <servers />
   </component>

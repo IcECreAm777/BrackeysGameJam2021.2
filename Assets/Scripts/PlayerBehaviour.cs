@@ -10,6 +10,8 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Game Properties")]
     [SerializeField]
     private int numOfBowls = 5;
+    [SerializeField]
+    private GameObject boomerangSpawn;
     
     [Header("Movement")]
     [SerializeField]
@@ -44,6 +46,8 @@ public class PlayerBehaviour : MonoBehaviour
     private InputAction sliceInputAction;
     [SerializeField]
     private InputAction bowlInputAction;
+    [SerializeField]
+    private InputAction mousePos;
 
     [Header("UI")] 
     [SerializeField] 
@@ -70,6 +74,8 @@ public class PlayerBehaviour : MonoBehaviour
     private int _numBowlsLeft;
 
 
+    // ENGINE FUNCTIONS 
+    
     void Awake()
     {
         // init default values
@@ -79,7 +85,7 @@ public class PlayerBehaviour : MonoBehaviour
         // get other components
         _characterController = GetComponent<CharacterController>();
         _cam = Camera.main;
-        
+
         // initialize input maps
         movingInputAction.performed += context => { _velocity = context.ReadValue<Vector2>(); };
         movingInputAction.canceled += context => { _velocity = Vector2.zero; };
@@ -89,31 +95,38 @@ public class PlayerBehaviour : MonoBehaviour
         sprintInputAction.performed += context => { _substractStamina = true; };
         sprintInputAction.canceled += context => { _substractStamina = false; };
         bowlInputAction.performed += OnBowl;
+        mousePos.performed += context => { _mousePos = context.ReadValue<Vector2>(); };
 
         movingInputAction.Enable();
         shootInputAction.Enable();
         sliceInputAction.Enable();
         sprintInputAction.Enable();
         bowlInputAction.Enable();
+        mousePos.Enable();
+    }
 
+    private void Start()
+    {
+        //TODO spawn boomerang below the level
+        
 #if DEBUG
         if (playerUi == null)
         {
             Debug.LogError("The UI controller is not assigned for the player");
-            return;
+        }
+
+        if (boomerangSpawn == null)
+        {
+            Debug.LogError("There was no game Object assigned as the boomerang spawn");
         }
 #endif
         
         //TODO initialize UI (like max Stamina and stuff)
     }
-    
-    void Update()
-    {
-        
-    }
 
     private void FixedUpdate()
     {
+        // Movement
         var normalizedDirection = _velocity.normalized;
         var currentSpeed = speed;
 
@@ -133,17 +146,26 @@ public class PlayerBehaviour : MonoBehaviour
             _stamina = _stamina >= maxStamina ? maxStamina : _stamina;
         }
 
-        normalizedDirection = normalizedDirection * currentSpeed;
+        normalizedDirection *= currentSpeed;
         var velocity = new Vector3(normalizedDirection.x, 0, normalizedDirection.y);
         _characterController.SimpleMove(velocity);
+        
+        // mouse pos
+        playerUi.UpdateCrossHairPosition(_mousePos);
+        transform.LookAt(GetCameraRaycastPositionThroughMouseCursor());
     }
     
     // INPUT ACTIONS
+    
     private void OnShoot(InputAction.CallbackContext context)
     {
         // return when player can't shoot or the boomerang is currently travelling
         if (!_canShoot || !_isBoomerangAvailable) return;
-        
+
+        var spawnPoint = boomerangSpawn.transform.position;
+        var target = GetCameraRaycastPositionThroughMouseCursor();
+        var direction = target - spawnPoint;
+
         //TODO spawn boomerang
 
         _isBoomerangAvailable = false;
@@ -219,5 +241,15 @@ public class PlayerBehaviour : MonoBehaviour
         _canSprint = false;
         yield return new WaitForSeconds(sprintCooldown);
         _canSprint = true;
+    }
+    
+    // UTILITY METHODS
+    private Vector3 GetCameraRaycastPositionThroughMouseCursor()
+    {
+        var ray = _cam.ScreenPointToRay(_mousePos);
+        if (!Physics.Raycast(ray, out var hit)) return Vector3.zero;
+        var pos = hit.point;
+        pos.y = 2.0f;
+        return pos;
     }
 }

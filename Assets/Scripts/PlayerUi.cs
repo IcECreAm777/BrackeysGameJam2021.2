@@ -1,14 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerUi : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private Image crossHair;
+
+#if DEBUG
+    void Awake()
     {
-        //TODO check if everything was assigned
+        if (crossHair == null)
+        {
+            Debug.LogError("The Image for the crosshair was not assigned for the Script");
+        }
     }
+#endif
 
     public void UpdateBoomerangCooldown(float cooldown)
     {
@@ -23,5 +31,10 @@ public class PlayerUi : MonoBehaviour
     public void UpdateBowlCooldown(float cooldown)
     {
         //TODO set text of a label to the number
+    }
+
+    public void UpdateCrossHairPosition(Vector2 mousePos)
+    {
+        crossHair.transform.position = mousePos;
     }
 }
