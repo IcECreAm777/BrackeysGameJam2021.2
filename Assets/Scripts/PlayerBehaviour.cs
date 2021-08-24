@@ -19,6 +19,10 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private GameObject restPoint;
 
+    [Header("Slicing")]
+    [SerializeField]
+    private Collider sliceCollider;
+
     [Header("Movement")]
     [SerializeField]
     private float speed = 7.0f;
@@ -76,7 +80,7 @@ public class PlayerBehaviour : MonoBehaviour
     private bool _canBowl = true;
 
     private bool _isBoomerangAvailable = true;
-    private bool _isSlicing = true;
+    private bool _isSlicing = false;
     private int _numBowlsLeft;
 
 
@@ -128,6 +132,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Debug.Log("No rest Position for the boomerang is assigned");
         }
+
+        if (sliceCollider == null)
+        {
+            Debug.LogError("No Collider as slice hit box assigned for the player");
+        }
 #endif
         
         boomerang.GetComponent<BoomerangBehaviour>().ReturnToRestPosition(restPoint);
@@ -165,7 +174,25 @@ public class PlayerBehaviour : MonoBehaviour
         playerUi.UpdateCrossHairPosition(_mousePos);
         transform.LookAt(GetCameraRaycastPositionThroughMouseCursor());
     }
-    
+
+    private void Update()
+    {
+        // Slicing
+        if (!_isSlicing || !_canSlice) return;
+        //TODO play attack animation
+        StartCoroutine(ActivateSliceHitBox());
+        StartCoroutine(SliceCooldown());
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //only care for fruits
+        if(other.gameObject.layer != 7) return;
+        
+        //TODO slice fruit
+        Destroy(other.gameObject);
+    }
+
     // INPUT ACTIONS
     
     private void OnShoot(InputAction.CallbackContext context)
@@ -229,7 +256,7 @@ public class PlayerBehaviour : MonoBehaviour
         _canShoot = true;
     }
 
-    private IEnumerator SwordCooldown()
+    private IEnumerator SliceCooldown()
     {
         _canSlice = false;
         var cd = swordCooldown;
@@ -264,6 +291,13 @@ public class PlayerBehaviour : MonoBehaviour
         _canSprint = false;
         yield return new WaitForSeconds(sprintCooldown);
         _canSprint = true;
+    }
+
+    private IEnumerator ActivateSliceHitBox()
+    {
+        sliceCollider.enabled = true;
+        yield return new WaitForSeconds(0.05f);
+        sliceCollider.enabled = false;
     }
     
     // UTILITY METHODS
