@@ -23,6 +23,10 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private Collider sliceCollider;
 
+    [Header("Bowl")]
+    [SerializeField]
+    private BowlBehaviour bowl;
+
     [Header("Movement")]
     [SerializeField]
     private float speed = 7.0f;
@@ -44,6 +48,12 @@ public class PlayerBehaviour : MonoBehaviour
     private float swordCooldown = 0.2f;
     [SerializeField]
     private float bowlCooldown = 10.0f;
+
+    [Header("Animations")]
+    [SerializeField]
+    private AnimationClip spinningAnimation;
+    [SerializeField]
+    private AnimationClip bowlPutAway;
 
     [Header("Input")]
     [SerializeField]
@@ -81,7 +91,13 @@ public class PlayerBehaviour : MonoBehaviour
 
     private bool _isBoomerangAvailable = true;
     private bool _isSlicing = false;
-    private int _numBowlsLeft;
+    private int _numBowls = 0;
+
+    // bowling
+    private List<CollectableFruitScriptableObject>[] _collectedBowls;
+    
+    // Animation Control
+    private Animation _animation;
 
 
     // ENGINE FUNCTIONS 
@@ -90,11 +106,16 @@ public class PlayerBehaviour : MonoBehaviour
     {
         // init default values
         _stamina = maxStamina;
-        _numBowlsLeft = numOfBowls;
+        _collectedBowls = new List<CollectableFruitScriptableObject>[numOfBowls];
 
         // get other components
         _characterController = GetComponent<CharacterController>();
         _cam = Camera.main;
+        
+        // set up animations
+        _animation = GetComponent<Animation>();
+        _animation.AddClip(spinningAnimation, "spin");
+        _animation.AddClip(bowlPutAway, "bowlPutAway");
 
         // initialize input maps
         movingInputAction.performed += context => { _velocity = context.ReadValue<Vector2>(); };
@@ -214,19 +235,11 @@ public class PlayerBehaviour : MonoBehaviour
     {
         // return when player can't bowl 
         if (!_canBowl) return;
-        
-        //TODO do spinning animation
-        //TODO collect everything in range and save the bowl
 
-        if (--numOfBowls <= 0)
-        {
-            //TODO end game
-            return;
-        }
-        
+        StartCoroutine(Bowling());
         StartCoroutine(BowlCooldown());
     }
-    
+
     // Other events
     public void PutBoomerangAway(BoomerangBehaviour boomer)
     {
@@ -236,6 +249,11 @@ public class PlayerBehaviour : MonoBehaviour
         //TODO play catch animation
         //TODO disable other inputs during catch animation
         //TODO animate rest point according to the player animation
+    }
+
+    public void EndGame()
+    {
+        //TODO implement
     }
 
     // COOLDOWN COROUTINES
@@ -298,6 +316,28 @@ public class PlayerBehaviour : MonoBehaviour
         sliceCollider.enabled = true;
         yield return new WaitForSeconds(0.05f);
         sliceCollider.enabled = false;
+    }
+
+    private IEnumerator Bowling()
+    {
+        bowl.SwingBowl();
+        _animation.Play("spin");
+        yield return WaitForAnimation();
+        _collectedBowls[_numBowls] = bowl.PutBowlAway();
+        _animation.Play("bowlPutAway");
+
+        if (++_numBowls >= numOfBowls)
+        {
+            EndGame();
+        }
+    }
+
+    private IEnumerator WaitForAnimation()
+    {
+        do
+        {
+            yield return null;
+        } while (_animation.isPlaying);
     }
     
     // UTILITY METHODS
