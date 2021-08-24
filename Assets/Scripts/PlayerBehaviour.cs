@@ -209,9 +209,17 @@ public class PlayerBehaviour : MonoBehaviour
     {
         //only care for fruits
         if(other.gameObject.layer != 7) return;
+
+        var fruit = other.gameObject.GetComponent<FruitBehaviour>();
         
-        //TODO slice fruit
-        Destroy(other.gameObject);
+#if DEBUG
+        if (fruit == null)
+        {
+            Debug.LogError($"The fruit '{other.gameObject.name}' has no fruit behaviour");
+        }
+#endif
+        
+        fruit.Split();
     }
 
     // INPUT ACTIONS
@@ -334,10 +342,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     private IEnumerator WaitForAnimation()
     {
-        do
-        {
-            yield return null;
-        } while (_animation.isPlaying);
+        do { yield return null; } 
+        while (_animation.isPlaying);
     }
     
     // UTILITY METHODS

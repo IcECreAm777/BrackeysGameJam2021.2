@@ -101,7 +101,8 @@ public class BoomerangBehaviour : MonoBehaviour
                 break;
             case 7:
                 // collision with a fruit
-                //TODO cut fruit if possible
+                var fruit = other.gameObject.GetComponent<FruitBehaviour>();
+                fruit.Split();
                 break;
         }
     }

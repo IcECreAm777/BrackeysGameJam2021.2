@@ -16,10 +16,9 @@ public class BowlBehaviour : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // bowl can only collide with fruits, so an extra check for the layer is unnecessary
-        
-        //TODO check if the fruit can be collected (if it's small enough)
-        //TODO add it to the list
-        //TODO make the fruit disappear
+        var fruitInfo = other.gameObject.GetComponent<FruitBehaviour>().Collect();
+        if(fruitInfo == null) return; // this fruit is not collectable
+        _collectedFruits.Add(fruitInfo);
     }
 
     public void SwingBowl()
