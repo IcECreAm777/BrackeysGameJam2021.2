@@ -336,7 +336,11 @@ public class PlayerBehaviour : MonoBehaviour
         _collectedBowls[_numBowls] = bowl.PutBowlAway();
         _animation.Play("bowlPutAway");
 
-        if (++_numBowls >= numOfBowls)
+        _numBowls++;
+        
+        playerUi.UpdateBowlsLeft(numOfBowls - _numBowls);
+
+        if (_numBowls >= numOfBowls)
         {
             EndGame();
         }

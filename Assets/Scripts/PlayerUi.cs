@@ -41,6 +41,10 @@ public class PlayerUi : MonoBehaviour
     private string bowlText;
     [SerializeField]
     private Image bowlPanel;
+
+    [Header("Bowls Left")]
+    [SerializeField]
+    private List<Image> bowlsLeft;
     
     // not exposed vars
     private bool _boomerangReturned;
@@ -119,6 +123,11 @@ public class PlayerUi : MonoBehaviour
     public void UpdateCrossHairPosition(Vector2 mousePos)
     {
         crossHair.transform.position = mousePos;
+    }
+
+    public void UpdateBowlsLeft(int bowls)
+    {
+        bowlsLeft[bowls].enabled = false;
     }
     
     // UTILITY METHODS
