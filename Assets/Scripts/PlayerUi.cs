@@ -45,6 +45,10 @@ public class PlayerUi : MonoBehaviour
     [Header("Bowls Left")]
     [SerializeField]
     private List<Image> bowlsLeft;
+
+    [Header("Game Start")]
+    [SerializeField]
+    private Text startGameCountdown;
     
     // not exposed vars
     private bool _boomerangReturned;
@@ -128,6 +132,12 @@ public class PlayerUi : MonoBehaviour
     public void UpdateBowlsLeft(int bowls)
     {
         bowlsLeft[bowls].enabled = false;
+    }
+
+    public void UpdateCountdown(int countdown)
+    {
+        var text = countdown > 0 ? countdown.ToString() : countdown == 0 ? "Start" : "";
+        startGameCountdown.text = text;
     }
     
     // UTILITY METHODS

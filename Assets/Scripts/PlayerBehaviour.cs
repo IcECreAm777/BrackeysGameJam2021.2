@@ -117,7 +117,7 @@ public class PlayerBehaviour : MonoBehaviour
         _animation.AddClip(spinningAnimation, "spin");
         _animation.AddClip(bowlPutAway, "bowlPutAway");
 
-        // initialize input maps
+        // initialize input maps - They'll be enabled, when the start routine is over
         movingInputAction.performed += context => { _velocity = context.ReadValue<Vector2>(); };
         movingInputAction.canceled += context => { _velocity = Vector2.zero; };
         shootInputAction.performed += OnShoot;
@@ -127,13 +127,6 @@ public class PlayerBehaviour : MonoBehaviour
         sprintInputAction.canceled += context => { _substractStamina = false; };
         bowlInputAction.performed += OnBowl;
         mousePos.performed += context => { _mousePos = context.ReadValue<Vector2>(); };
-
-        movingInputAction.Enable();
-        shootInputAction.Enable();
-        sliceInputAction.Enable();
-        sprintInputAction.Enable();
-        bowlInputAction.Enable();
-        mousePos.Enable();
     }
 
     private void Start()
@@ -161,6 +154,8 @@ public class PlayerBehaviour : MonoBehaviour
 #endif
         
         boomerang.GetComponent<BoomerangBehaviour>().ReturnToRestPosition(restPoint);
+        
+        StartCoroutine(GameStartRoutine());
         
         //TODO initialize UI (like max Stamina and stuff)
     }
@@ -346,12 +341,28 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitForAnimation()
+    private IEnumerator GameStartRoutine()
     {
-        do { yield return null; } 
-        while (_animation.isPlaying);
+        // wait half a second to make sure the game is loaded
+        yield return new WaitForSeconds(0.5f);
+        for (var i = 3; i >= 0; i--)
+        {
+            playerUi.UpdateCountdown(i);
+            yield return new WaitForSeconds(1.0f);
+        }
+        
+        playerUi.UpdateCountdown(-1);
+        
+        movingInputAction.Enable();
+        shootInputAction.Enable();
+        sliceInputAction.Enable();
+        sprintInputAction.Enable();
+        bowlInputAction.Enable();
+        mousePos.Enable();
+        
+        
     }
-    
+
     // UTILITY METHODS
     private Vector3 GetCameraRaycastPositionThroughMouseCursor()
     {
@@ -360,5 +371,11 @@ public class PlayerBehaviour : MonoBehaviour
         var pos = hit.point;
         pos.y = 2.0f;
         return pos;
+    }
+    
+    private IEnumerator WaitForAnimation()
+    {
+        do { yield return null; } 
+        while (_animation.isPlaying);
     }
 }
