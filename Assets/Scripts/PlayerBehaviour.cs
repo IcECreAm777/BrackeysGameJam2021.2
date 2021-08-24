@@ -257,9 +257,18 @@ public class PlayerBehaviour : MonoBehaviour
         //TODO animate rest point according to the player animation
     }
 
-    public void EndGame()
+    private void EndGame()
     {
-        //TODO implement
+        StopAllCoroutines();
+        
+        movingInputAction.Disable();
+        shootInputAction.Disable();
+        sliceInputAction.Disable();
+        sprintInputAction.Disable();
+        bowlInputAction.Disable();
+        mousePos.Disable();
+        
+        //TODO show and initialize post game UI
     }
 
     // COOLDOWN COROUTINES
@@ -359,8 +368,23 @@ public class PlayerBehaviour : MonoBehaviour
         sprintInputAction.Enable();
         bowlInputAction.Enable();
         mousePos.Enable();
+
+        StartCoroutine(GameTime());
+    }
+
+    private IEnumerator GameTime()
+    {
+        var time = 120.0f;
+        while (time > 0.0f)
+        {
+            yield return new WaitForSeconds(0.1f);
+            time -= 0.1f;
+            playerUi.UpdateTimeLeft(time);
+            
+            //TODO play sound in last 10 seconds
+        }
         
-        
+        EndGame();
     }
 
     // UTILITY METHODS

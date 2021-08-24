@@ -46,9 +46,11 @@ public class PlayerUi : MonoBehaviour
     [SerializeField]
     private List<Image> bowlsLeft;
 
-    [Header("Game Start")]
+    [Header("Game Control")]
     [SerializeField]
     private Text startGameCountdown;
+    [SerializeField]
+    private Text timeLeft;
     
     // not exposed vars
     private bool _boomerangReturned;
@@ -138,6 +140,18 @@ public class PlayerUi : MonoBehaviour
     {
         var text = countdown > 0 ? countdown.ToString() : countdown == 0 ? "Start" : "";
         startGameCountdown.text = text;
+    }
+
+    public void UpdateTimeLeft(float left)
+    {
+        if (left <= 0.0f)
+        {
+            timeLeft.enabled = false;
+            return;
+        }
+        
+        var text = $"Time Left: {left:F1}";
+        timeLeft.text = text;
     }
     
     // UTILITY METHODS
