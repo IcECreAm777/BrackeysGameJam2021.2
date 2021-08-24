@@ -237,6 +237,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         _isBoomerangAvailable = false;
         StartCoroutine(BoomerangCooldown());
+        
+        playerUi.UpdateBoomerangCatched(false);
     }
 
     private void OnBowl(InputAction.CallbackContext context)
@@ -253,6 +255,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         _isBoomerangAvailable = true;
         boomer.ReturnToRestPosition(restPoint);
+        playerUi.UpdateBoomerangCatched(true);
 
         //TODO play catch animation
         //TODO disable other inputs during catch animation
@@ -275,7 +278,6 @@ public class PlayerBehaviour : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             cd -= 0.1f;
             playerUi.UpdateBoomerangCooldown(cd);
-            Debug.Log($"Boomer CD: {cd}");
         }
         
         playerUi.UpdateBoomerangCooldown(cd);
@@ -290,10 +292,10 @@ public class PlayerBehaviour : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             cd -= 0.1f;
-            playerUi.UpdateSwordCooldown(cd);
+            playerUi.UpdateKnifeCooldown(cd);
         }
         
-        playerUi.UpdateSwordCooldown(cd);
+        playerUi.UpdateKnifeCooldown(cd);
         _canSlice = true;
     }
 
