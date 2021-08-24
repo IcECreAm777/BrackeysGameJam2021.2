@@ -18,7 +18,7 @@ public class PlayerUi : MonoBehaviour
     [SerializeField] 
     private string knifeText;
     [SerializeField]
-    private Image knifePanel;
+    private Slider knifeSlider;
 
     [Header("Boomerang Control")]
     [SerializeField]
@@ -30,9 +30,9 @@ public class PlayerUi : MonoBehaviour
     [SerializeField]
     private string boomerangTravellingText;
     [SerializeField]
-    private Image boomerangPanel;
+    private Slider boomerangSlider;
     
-    [Header("Boomerang Control")]
+    [Header("BowlControl")]
     [SerializeField]
     private Text bowlCooldown;
     [SerializeField]
@@ -40,7 +40,11 @@ public class PlayerUi : MonoBehaviour
     [SerializeField] 
     private string bowlText;
     [SerializeField]
-    private Image bowlPanel;
+    private Slider bowlSlider;
+
+    [Header("Stamina")]
+    [SerializeField]
+    private Slider staminaSlider;
 
     [Header("Bowls Left")]
     [SerializeField]
@@ -59,8 +63,6 @@ public class PlayerUi : MonoBehaviour
     // constants
     private const float IconAlphaMin = 100.0f;
     private const float IconAlphaMax = 255.0f;
-    private const float PanelAlphaMin = 0.0f;
-    private const float PanelAlphaMax = 5.0f;
 
 #if DEBUG
     void Awake()
@@ -79,6 +81,19 @@ public class PlayerUi : MonoBehaviour
         bowlCooldown.text = bowlText;
     }
 
+    public void Initialize(float boomerCd, float knifeCd, float bowlCd, float stamina)
+    {
+        bowlSlider.maxValue = bowlCd;
+        boomerangSlider.maxValue = boomerCd;
+        knifeSlider.maxValue = knifeCd;
+        staminaSlider.maxValue = stamina;
+
+        bowlSlider.value = bowlCd;
+        boomerangSlider.value = boomerCd;
+        knifeSlider.value = knifeCd;
+        staminaSlider.value = stamina;
+    }
+
     public void UpdateBoomerangCatched(bool catched)
     {
         _boomerangReturned = catched;
@@ -86,44 +101,40 @@ public class PlayerUi : MonoBehaviour
         if (!_boomerangCd) return;
         boomerangCooldown.text = boomerangText;
         ChangeImageAlpha(ref boomerangIcon, IconAlphaMax);
-        ChangeImageAlpha(ref boomerangPanel, PanelAlphaMax);
     }
 
     public void UpdateBoomerangCooldown(float cooldown)
     {
         _boomerangCd = cooldown <= 0.0f;
         var alphaIcon = _boomerangCd && _boomerangReturned ? IconAlphaMax : IconAlphaMin;
-        var alphaPanel = _boomerangCd && _boomerangReturned ? PanelAlphaMax : PanelAlphaMin;
 
         var text = _boomerangCd
             ? _boomerangReturned ? boomerangText : boomerangTravellingText
             : cooldown.ToString("F1");
 
+        boomerangSlider.value = boomerangSlider.maxValue - cooldown;
         boomerangCooldown.text = text;
         ChangeImageAlpha(ref boomerangIcon, alphaIcon);
-        ChangeImageAlpha(ref boomerangPanel, alphaPanel);
     }
 
     public void UpdateKnifeCooldown(float cooldown)
     {
         var text = cooldown <= 0.0f ? knifeText : cooldown.ToString("F1");
         var alphaIcon = cooldown <= 0.0f ? IconAlphaMax : IconAlphaMin;
-        var alphaPanel = cooldown <= 0.0f ? PanelAlphaMax : PanelAlphaMin;
 
+        knifeSlider.value = knifeSlider.maxValue - cooldown;
         knifeCooldown.text = text;
         ChangeImageAlpha(ref knifeIcon, alphaIcon);
-        ChangeImageAlpha(ref knifePanel, alphaPanel);
     }
 
     public void UpdateBowlCooldown(float cooldown)
     {
         var text = cooldown <= 0.0f ? bowlText : cooldown.ToString("F1");
         var alphaIcon = cooldown <= 0.0f ? IconAlphaMax : IconAlphaMin;
-        var alphaPanel = cooldown <= 0.0f ? PanelAlphaMax : PanelAlphaMin;
 
+        bowlSlider.value = bowlSlider.maxValue - cooldown;
         bowlCooldown.text = text;
         ChangeImageAlpha(ref bowlIcon, alphaIcon);
-        ChangeImageAlpha(ref bowlPanel, alphaPanel);
     }
 
     public void UpdateCrossHairPosition(Vector2 mousePos)
@@ -152,6 +163,11 @@ public class PlayerUi : MonoBehaviour
         
         var text = $"Time Left: {left:F1}";
         timeLeft.text = text;
+    }
+
+    public void UpdateStamina(float stamina)
+    {
+        staminaSlider.value = stamina;
     }
     
     // UTILITY METHODS

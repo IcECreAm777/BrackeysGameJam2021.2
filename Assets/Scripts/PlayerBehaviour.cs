@@ -157,7 +157,7 @@ public class PlayerBehaviour : MonoBehaviour
         
         StartCoroutine(GameStartRoutine());
         
-        //TODO initialize UI (like max Stamina and stuff)
+        playerUi.Initialize(boomerangCooldown, swordCooldown, bowlCooldown, maxStamina);
     }
 
     private void FixedUpdate()
@@ -181,6 +181,8 @@ public class PlayerBehaviour : MonoBehaviour
             _stamina += Time.deltaTime * staminaRegenerationRate;
             _stamina = _stamina >= maxStamina ? maxStamina : _stamina;
         }
+        
+        playerUi.UpdateStamina(_stamina);
 
         normalizedDirection *= currentSpeed;
         var velocity = new Vector3(normalizedDirection.x, 0, normalizedDirection.y);
