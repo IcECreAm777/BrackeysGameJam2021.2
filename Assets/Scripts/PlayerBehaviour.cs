@@ -10,9 +10,15 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Game Properties")]
     [SerializeField]
     private int numOfBowls = 5;
+    
+    [Header("Boomerang")]
+    [SerializeField]
+    private GameObject boomerang;
     [SerializeField]
     private GameObject boomerangSpawn;
-    
+    [SerializeField]
+    private GameObject restPoint;
+
     [Header("Movement")]
     [SerializeField]
     private float speed = 7.0f;
@@ -107,8 +113,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Start()
     {
-        //TODO spawn boomerang below the level
-        
 #if DEBUG
         if (playerUi == null)
         {
@@ -119,7 +123,14 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Debug.LogError("There was no game Object assigned as the boomerang spawn");
         }
+        
+        if (restPoint == null)
+        {
+            Debug.Log("No rest Position for the boomerang is assigned");
+        }
 #endif
+        
+        boomerang.GetComponent<BoomerangBehaviour>().ReturnToRestPosition(restPoint);
         
         //TODO initialize UI (like max Stamina and stuff)
     }
@@ -165,8 +176,8 @@ public class PlayerBehaviour : MonoBehaviour
         var spawnPoint = boomerangSpawn.transform.position;
         var target = GetCameraRaycastPositionThroughMouseCursor();
         var direction = target - spawnPoint;
-
-        //TODO spawn boomerang
+        
+        boomerang.GetComponent<BoomerangBehaviour>().Throw(spawnPoint, direction);
 
         _isBoomerangAvailable = false;
         StartCoroutine(BoomerangCooldown());
@@ -188,6 +199,17 @@ public class PlayerBehaviour : MonoBehaviour
         
         StartCoroutine(BowlCooldown());
     }
+    
+    // Other events
+    public void PutBoomerangAway(BoomerangBehaviour boomer)
+    {
+        _isBoomerangAvailable = true;
+        boomer.ReturnToRestPosition(restPoint);
+
+        //TODO play catch animation
+        //TODO disable other inputs during catch animation
+        //TODO animate rest point according to the player animation
+    }
 
     // COOLDOWN COROUTINES
     
@@ -200,6 +222,7 @@ public class PlayerBehaviour : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             cd -= 0.1f;
             playerUi.UpdateBoomerangCooldown(cd);
+            Debug.Log($"Boomer CD: {cd}");
         }
         
         playerUi.UpdateBoomerangCooldown(cd);
