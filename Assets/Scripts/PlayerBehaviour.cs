@@ -10,6 +10,8 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Game Properties")]
     [SerializeField]
     private int numOfBowls = 5;
+    [SerializeField] 
+    private float gameTime = 5.0f;
     
     [Header("Boomerang")]
     [SerializeField]
@@ -72,6 +74,8 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("UI")] 
     [SerializeField] 
     private PlayerUi playerUi;
+    [SerializeField]
+    private PostGameUI postGameUI;
 
     // other components
     private CharacterController _characterController;
@@ -107,6 +111,10 @@ public class PlayerBehaviour : MonoBehaviour
         // init default values
         _stamina = maxStamina;
         _collectedBowls = new List<CollectableFruitScriptableObject>[numOfBowls];
+        for (var i = 0; i < numOfBowls; i++)
+        {
+            _collectedBowls[i] = new List<CollectableFruitScriptableObject>();
+        }
 
         // get other components
         _characterController = GetComponent<CharacterController>();
@@ -269,7 +277,10 @@ public class PlayerBehaviour : MonoBehaviour
         bowlInputAction.Disable();
         mousePos.Disable();
         
-        //TODO show and initialize post game UI
+        playerUi.gameObject.SetActive(false);
+
+        postGameUI.gameObject.SetActive(true);
+        postGameUI.Initialize(_collectedBowls);
     }
 
     // COOLDOWN COROUTINES
@@ -374,7 +385,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private IEnumerator GameTime()
     {
-        var time = 120.0f;
+        var time = gameTime;
         while (time > 0.0f)
         {
             yield return new WaitForSeconds(0.1f);
