@@ -94,7 +94,7 @@ public class FruitBehaviour : MonoBehaviour
             var dir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
             var force = dir.normalized * Random.Range(splittingInfo.splittingMinForce, 
                 splittingInfo.splittingMaxForce);
-            var dvd = fruit.GetComponentInParent<DVDBehaviour>();
+            var dvd = fruit.GetComponent<DVDBehaviour>();
             dvd.Initialize(force);
         }
         

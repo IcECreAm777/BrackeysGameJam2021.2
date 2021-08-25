@@ -154,10 +154,9 @@ public class PlayerBehaviour : MonoBehaviour
 #endif
         
         boomerang.GetComponent<BoomerangBehaviour>().ReturnToRestPosition(restPoint);
-        
         StartCoroutine(GameStartRoutine());
-        
         playerUi.Initialize(boomerangCooldown, swordCooldown, bowlCooldown, maxStamina);
+        mousePos.Enable();
     }
 
     private void FixedUpdate()
@@ -369,7 +368,6 @@ public class PlayerBehaviour : MonoBehaviour
         sliceInputAction.Enable();
         sprintInputAction.Enable();
         bowlInputAction.Enable();
-        mousePos.Enable();
 
         StartCoroutine(GameTime());
     }
