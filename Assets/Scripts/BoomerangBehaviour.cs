@@ -9,37 +9,26 @@ public class BoomerangBehaviour : MonoBehaviour
     [SerializeField]
     private float initialSpeed;
     [SerializeField]
-    private float travelSpeed;
-
-    [Header("CollisionDetection")]
-    [SerializeField]
-    private BoomerangCollider upCollision;
-    [SerializeField]
-    private BoomerangCollider downCollision;
-    [SerializeField]
-    private BoomerangCollider leftCollision;
-    [SerializeField]
-    private BoomerangCollider rightCollision;
+    private float afterFirstHitSpeedScaling = 1.0f;
 
     private Rigidbody _rb;
+    private DVDBehaviour _dvd;
     
-    private Vector3 _velocity;
     private bool _isInitial = true;
     private bool _isThrown = false;
-    private bool _canChangeZ = true;
-    private bool _canChangeX = true;
-
-    private const float Epsilon = 0.001f;
 
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        _dvd = GetComponent<DVDBehaviour>();
 
-        upCollision.WallHitEvent += ChangeDirection;
-        downCollision.WallHitEvent += ChangeDirection;
-        leftCollision.WallHitEvent += ChangeDirection;
-        rightCollision.WallHitEvent += ChangeDirection;
+        _dvd.WallHitEvent += () =>
+        {
+            if (!_isInitial) return;
+            _dvd.ScaleVelocity(afterFirstHitSpeedScaling);
+            _isInitial = false;
+        };
         
 #if DEBUG
         if (_rb == null)
@@ -47,14 +36,6 @@ public class BoomerangBehaviour : MonoBehaviour
             Debug.LogError("There was no kinematic Rigidbody assigned for the boomerang");
         }
 #endif
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_isThrown) return;
-
-        var targetPos = transform.position + _velocity;
-        _rb.MovePosition(targetPos);
     }
 
     public void Throw(Vector3 spawnPosition, Vector3 direction)
@@ -65,7 +46,7 @@ public class BoomerangBehaviour : MonoBehaviour
         transform1.position = spawnPosition;
         transform1.rotation = new Quaternion();
         
-        _velocity = direction.normalized * initialSpeed;
+        _dvd.Initialize(direction.normalized * initialSpeed);
         _isInitial = true;
         _isThrown = true;
     }
@@ -77,13 +58,9 @@ public class BoomerangBehaviour : MonoBehaviour
         transform1.position = restPositionObject.transform.position;
         transform1.parent = restPositionObject.transform;
         
-        _isThrown = false;
-        _velocity = Vector3.zero;
         _rb.velocity = Vector3.zero;
+        _dvd.ScaleVelocity(0.0f);
 
-        _canChangeX = true;
-        _canChangeZ = true;
-        
         StopAllCoroutines();
     }
 
@@ -105,42 +82,5 @@ public class BoomerangBehaviour : MonoBehaviour
                 fruit.Split();
                 break;
         }
-    }
-
-    private void ChangeDirection(bool flipZ)
-    {
-        // open scissor when hitting a wall the first time and reducing it's speed
-        if (_isInitial)
-        {
-            //TODO do animation of scissor being opened
-
-            _velocity = _velocity.normalized * travelSpeed;
-            _isInitial = false;
-        }
-        
-        if (flipZ && _canChangeZ)
-        {
-            _velocity.z = -_velocity.z;
-            StartCoroutine(DisableFlipZDirection());
-            return;
-        }
-
-        if(!_canChangeX) return;
-        _velocity.x = -_velocity.x;
-        StartCoroutine(DisableFlipXDirection());
-    }
-    
-    private IEnumerator DisableFlipZDirection()
-    {
-        _canChangeZ = false;
-        yield return new WaitForSeconds(1.0f);
-        _canChangeZ = true;
-    }
-    
-    private IEnumerator DisableFlipXDirection()
-    {
-        _canChangeX = false;
-        yield return new WaitForSeconds(1.0f);
-        _canChangeX = true;
     }
 }

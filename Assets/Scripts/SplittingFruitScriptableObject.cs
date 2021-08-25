@@ -6,8 +6,8 @@ using UnityEngine;
 public class SplittingFruitScriptableObject : ScriptableObject
 {
     public List<GameObject> splitFruits;
-    [Range(0.1f, 100.0f)] 
+    [Range(0.0f, 0.25f)] 
     public float splittingMinForce;
-    [Range(0.1f, 200.0f)]
+    [Range(0.0f, 0.6f)]
     public float splittingMaxForce;
 }

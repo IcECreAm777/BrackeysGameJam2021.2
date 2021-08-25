@@ -11,7 +11,7 @@ public class FruitBehaviour : MonoBehaviour
     private bool canSplit;
     [SerializeField]
     private SplittingFruitScriptableObject splittingInfo;
-    
+
     [Header("Collectable")]
     [SerializeField]
     private bool isCollectable;
@@ -91,11 +91,11 @@ public class FruitBehaviour : MonoBehaviour
         {
             fruit.SetActive(true);
             fruit.transform.position = position;
-            var dir = new Vector3(Random.Range(0.0f, 1.0f), 0.0f, Random.Range(0.0f, 1.0f));
+            var dir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
             var force = dir.normalized * Random.Range(splittingInfo.splittingMinForce, 
                 splittingInfo.splittingMaxForce);
-            var rb = fruit.GetComponent<Rigidbody>();
-            rb.AddForce(force);
+            var dvd = fruit.GetComponentInParent<DVDBehaviour>();
+            dvd.Initialize(force);
         }
         
         Destroy(gameObject);
