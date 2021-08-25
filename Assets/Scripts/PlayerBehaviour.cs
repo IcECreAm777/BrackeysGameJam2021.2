@@ -70,6 +70,8 @@ public class PlayerBehaviour : MonoBehaviour
     private InputAction bowlInputAction;
     [SerializeField]
     private InputAction mousePos;
+    [SerializeField]
+    private InputAction pause;
 
     [Header("UI")] 
     [SerializeField] 
@@ -135,6 +137,7 @@ public class PlayerBehaviour : MonoBehaviour
         sprintInputAction.canceled += context => { _substractStamina = false; };
         bowlInputAction.performed += OnBowl;
         mousePos.performed += context => { _mousePos = context.ReadValue<Vector2>(); };
+        pause.performed += context => { playerUi.PauseGame(); };
     }
 
     private void Start()
@@ -379,6 +382,7 @@ public class PlayerBehaviour : MonoBehaviour
         sliceInputAction.Enable();
         sprintInputAction.Enable();
         bowlInputAction.Enable();
+        pause.Enable();
 
         StartCoroutine(GameTime());
     }

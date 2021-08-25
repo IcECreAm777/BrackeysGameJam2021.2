@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerUi : MonoBehaviour
@@ -9,6 +10,14 @@ public class PlayerUi : MonoBehaviour
     [Header("Cross hair")]
     [SerializeField]
     private Image crossHair;
+
+    [Header("Pause Screen")] 
+    [SerializeField]
+    private GameObject pauseScreen;
+    [SerializeField]
+    private Button continueButton;
+    [SerializeField]
+    private Button quitButton;
 
     [Header("Knife Control")]
     [SerializeField]
@@ -59,20 +68,26 @@ public class PlayerUi : MonoBehaviour
     // not exposed vars
     private bool _boomerangReturned;
     private bool _boomerangCd;
-    
+
     // constants
     private const float IconAlphaMin = 100.0f;
     private const float IconAlphaMax = 255.0f;
-
-#if DEBUG
+    
+    
+    // ENGINE METHODS
+    
     void Awake()
     {
+        continueButton.onClick.AddListener(OnContinue);
+        quitButton.onClick.AddListener(OnQuit);
+        
+#if DEBUG
         if (crossHair == null)
         {
-            Debug.LogError("The Image for the crosshair was not assigned for the Script");
+            Debug.LogError("The Image for the cross hair was not assigned for the Script");
         }
-    }
 #endif
+    }
 
     private void Start()
     {
@@ -80,6 +95,21 @@ public class PlayerUi : MonoBehaviour
         boomerangCooldown.text = boomerangText;
         bowlCooldown.text = bowlText;
     }
+    
+    // UI METHODS
+    
+    private void OnContinue()
+    {
+        pauseScreen.SetActive(false);
+        Time.timeScale = 1.0f;
+    }
+
+    private void OnQuit()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+    
+    // UPDATE UI METHODS
 
     public void Initialize(float boomerCd, float knifeCd, float bowlCd, float stamina)
     {
@@ -92,6 +122,12 @@ public class PlayerUi : MonoBehaviour
         boomerangSlider.value = boomerCd;
         knifeSlider.value = knifeCd;
         staminaSlider.value = stamina;
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0.0f;
+        pauseScreen.SetActive(true);
     }
 
     public void UpdateBoomerangCatched(bool catched)
