@@ -161,7 +161,7 @@ public class PostGameUI : MonoBehaviour
             
             // sort by number of fruits and calculate points based on the portion of the 
             var sorted = _differentFruits[i].OrderByDescending(key => key.Value);
-            var rating = 100 - ((float) sorted.First().Value / bowls[i].Count) * 100;
+            var rating = (100 - ((float) sorted.First().Value / bowls[i].Count) * 100) / 75 * 100;
             _diversityScore[i] = (int) Math.Ceiling(rating);
             
             // add scores
