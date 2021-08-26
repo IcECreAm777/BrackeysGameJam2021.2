@@ -66,6 +66,9 @@ public class BoomerangBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
+        // only care about collision when boomerang is thrown
+        if(!_isThrown) return;
+        
         // do stuff based on the collision layer
         var otherObject = other.gameObject;
         switch (otherObject.layer)
