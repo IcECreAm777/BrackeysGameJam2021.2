@@ -11,6 +11,12 @@ public class BoomerangBehaviour : MonoBehaviour
     [SerializeField]
     private float afterFirstHitSpeedScaling = 1.0f;
 
+    [Header("Models")]
+    [SerializeField]
+    private GameObject closed;
+    [SerializeField]
+    private GameObject opened;
+
     private Rigidbody _rb;
     private DVDBehaviour _dvd;
     
@@ -28,6 +34,9 @@ public class BoomerangBehaviour : MonoBehaviour
             if (!_isInitial) return;
             _dvd.ScaleVelocity(afterFirstHitSpeedScaling);
             _isInitial = false;
+            
+            opened.SetActive(true);
+            closed.SetActive(false);
         };
         
 #if DEBUG
@@ -60,6 +69,9 @@ public class BoomerangBehaviour : MonoBehaviour
         
         _rb.velocity = Vector3.zero;
         _dvd.ScaleVelocity(0.0f);
+        
+        opened.SetActive(false);
+        closed.SetActive(true);
 
         StopAllCoroutines();
     }
