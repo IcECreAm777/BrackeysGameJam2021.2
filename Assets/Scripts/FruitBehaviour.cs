@@ -107,10 +107,16 @@ public class FruitBehaviour : MonoBehaviour
 #endif
         
         var pos = basket.transform.position;
-        _instantiatedFruits = new GameObject[splittingInfo.splitFruits.Count];
-        for (var i = 0; i < splittingInfo.splitFruits.Count; i++)
+        _instantiatedFruits = new GameObject[splittingInfo.numOfSpawnedFruits];
+        for (var i = 0; i < splittingInfo.numOfSpawnedFruits; i++)
         {
-            _instantiatedFruits[i] = Instantiate(splittingInfo.splitFruits[i]);
+            var index = 0;
+            if (splittingInfo.splitFruits.Count > 1)
+            {
+                index = Random.Range(0, splittingInfo.splitFruits.Count);
+            }
+            
+            _instantiatedFruits[i] = Instantiate(splittingInfo.splitFruits[index]);
             _instantiatedFruits[i].transform.position = pos;
             _instantiatedFruits[i].GetComponent<FruitBehaviour>().SpawnChildren();
             _instantiatedFruits[i].SetActive(false);
