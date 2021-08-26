@@ -19,6 +19,8 @@ public class FruitBehaviour : MonoBehaviour
     private CollectableFruitScriptableObject collectableInfo;
 
     private GameObject[] _instantiatedFruits;
+    private bool _childrenSpawned;
+    private bool _aliveLongEnough;
     
     // ENGINE FUNCTIONS
 
@@ -49,28 +51,12 @@ public class FruitBehaviour : MonoBehaviour
 
     private void Start()
     {
-        // spawn child objects when it's tagged as splittable
-        if (canSplit)
-        {
-            var basket = GameObject.Find("FruitsBasket");
-            
-#if DEBUG
-            if (basket == null)
-            {
-                Debug.LogError("No game object with the name 'FruitsBasket found'");
-                return;
-            }
-#endif
-
-            var pos = basket.transform.position;
-            _instantiatedFruits = new GameObject[splittingInfo.splitFruits.Count];
-            for (var i = 0; i < splittingInfo.splitFruits.Count; i++)
-            {
-                _instantiatedFruits[i] = Instantiate(splittingInfo.splitFruits[i]);
-                _instantiatedFruits[i].transform.position = pos;
-                _instantiatedFruits[i].SetActive(false);
-            }
-        }
+        // fruits can be split after a certain amount of time
+        StartCoroutine(AliveLongEnough());
+        
+        // some fruits are spawning the children earlier so they don't have to spawn them again
+        if (_childrenSpawned) return;
+        SpawnChildren();
     }
     
     // OTHER FUNCTIONALITY
@@ -84,7 +70,7 @@ public class FruitBehaviour : MonoBehaviour
 
     public void Split()
     {
-        if (!canSplit) return;
+        if (!canSplit || !_aliveLongEnough) return;
         
         var position = transform.position;
         foreach (var fruit in _instantiatedFruits)
@@ -99,5 +85,45 @@ public class FruitBehaviour : MonoBehaviour
         }
         
         Destroy(gameObject);
+    }
+
+    public void SpawnChildren()
+    {
+        // return when fruit is not splittable (a collectable fruit)
+        if (!canSplit)
+        {
+            _childrenSpawned = true;
+            return;
+        }
+        
+        var basket = GameObject.Find("FruitsBasket");
+        
+#if DEBUG
+        if (basket == null)
+        {
+            Debug.LogError("No game object with the name 'FruitsBasket found'");
+            return;
+        }
+#endif
+        
+        var pos = basket.transform.position;
+        _instantiatedFruits = new GameObject[splittingInfo.splitFruits.Count];
+        for (var i = 0; i < splittingInfo.splitFruits.Count; i++)
+        {
+            _instantiatedFruits[i] = Instantiate(splittingInfo.splitFruits[i]);
+            _instantiatedFruits[i].transform.position = pos;
+            _instantiatedFruits[i].GetComponent<FruitBehaviour>().SpawnChildren();
+            _instantiatedFruits[i].SetActive(false);
+        }
+
+        _childrenSpawned = true;
+    }
+    
+    // COROUTINES
+
+    private IEnumerator AliveLongEnough()
+    {
+        yield return new WaitForSeconds(1.0f);
+        _aliveLongEnough = true;
     }
 }
