@@ -38,12 +38,7 @@ public class PostGameUI : MonoBehaviour
     private Button playAgainButton;
     [SerializeField]
     private Button quitButton;
-
-    [Header("Input")]
-    [SerializeField]
-    private InputAction skip;
-
-    private bool _skipping = false;
+    
     private int _score;
     private int[] _bowlSum;
     private int[] _singleFruitScore;
@@ -59,8 +54,6 @@ public class PostGameUI : MonoBehaviour
         quitButton.onClick.AddListener(Quit);
         
         buttonArea.SetActive(false);
-
-        skip.performed += context => { _skipping = true; };
     }
 
     // BUTTON METHODS
@@ -90,9 +83,7 @@ public class PostGameUI : MonoBehaviour
         {
             _differentFruits[i] = new Dictionary<string, int>();
         }
-        
-        skip.Enable();
-        
+
         StartCoroutine(Animation(bowls));
     }
 
@@ -108,12 +99,13 @@ public class PostGameUI : MonoBehaviour
             for (var j = 0; j < bowls.Length; j++)
             {
                 // return when the bowl doesn't have i items
-                if(bowls[j].Count < max || bowls[j].Count == 0) continue;
+                if(i >= bowls[j].Count || bowls[j].Count == 0) continue;
                 
                 // give bonus points for x fruits in the bowl
                 if (i % massBonus == 0 && i > 0)
                 {
                     _bowlMassScore[j] += massPoints;
+                    _bowlSum[j] += massPoints;
                     _score += massPoints;
 
                     // change the text for the mass bonus
@@ -142,10 +134,10 @@ public class PostGameUI : MonoBehaviour
                 }
             }
 
-            if (!_skipping) yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f);
         }
 
-        if (!_skipping) yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f);
 
         // rate the diversity
         for (var i = 0; i < _differentFruits.Length; i++)
@@ -155,13 +147,13 @@ public class PostGameUI : MonoBehaviour
             {
                 bowlFruitLists[i].options = new List<Dropdown.OptionData> {new Dropdown.OptionData("None")};
                 bowlFruitLists[i].gameObject.SetActive(true);
-                if (!_skipping) yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.1f);
                 continue;
             }
             
             // sort by number of fruits and calculate points based on the portion of the 
             var sorted = _differentFruits[i].OrderByDescending(key => key.Value);
-            var rating = 100 - ((float) sorted.First().Value / bowls[i].Count) * 100;
+            var rating = (100 - ((float) sorted.First().Value / bowls[i].Count) * 100) / 75 * 100;
             _diversityScore[i] = (int) Math.Ceiling(rating);
             
             // add scores
@@ -182,7 +174,7 @@ public class PostGameUI : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         
-        if (!_skipping) yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f);
         buttonArea.SetActive(true);
     }
 }

@@ -23,7 +23,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     [Header("Slicing")]
     [SerializeField]
-    private Collider sliceCollider;
+    private GameObject sliceCollider;
+    [SerializeField]
+    private float attackWindow = 0.0f;
 
     [Header("Bowl")]
     [SerializeField]
@@ -212,23 +214,6 @@ public class PlayerBehaviour : MonoBehaviour
         StartCoroutine(SliceCooldown());
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //only care for fruits
-        if(other.gameObject.layer != 7) return;
-
-        var fruit = other.gameObject.GetComponent<FruitBehaviour>();
-        
-#if DEBUG
-        if (fruit == null)
-        {
-            Debug.LogError($"The fruit '{other.gameObject.name}' has no fruit behaviour");
-        }
-#endif
-        
-        fruit.Split();
-    }
-
     // INPUT ACTIONS
     
     private void OnShoot(InputAction.CallbackContext context)
@@ -342,9 +327,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     private IEnumerator ActivateSliceHitBox()
     {
-        sliceCollider.enabled = true;
-        yield return new WaitForSeconds(0.05f);
-        sliceCollider.enabled = false;
+        sliceCollider.SetActive(true);
+        yield return new WaitForSeconds(attackWindow);
+        sliceCollider.SetActive(false);
     }
 
     private IEnumerator Bowling()

@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "new Splitting Fruit", menuName = "Fruit/Splitting Fruit")]
 public class SplittingFruitScriptableObject : ScriptableObject
 {
+    public uint numOfSpawnedFruits;
     public List<GameObject> splitFruits;
     [Range(0.0f, 0.25f)] 
     public float splittingMinForce;
