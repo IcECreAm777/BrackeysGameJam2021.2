@@ -189,15 +189,15 @@ public class PlayerUi : MonoBehaviour
         startGameCountdown.text = text;
     }
 
-    public void UpdateTimeLeft(float left)
+    public void UpdateTimeLeft(int left)
     {
-        if (left <= 0.0f)
+        if (left <= 0)
         {
             timeLeft.enabled = false;
             return;
         }
         
-        var text = $"Time Left: {left:F1}";
+        var text = $"Time Left: {left.ToString()}";
         timeLeft.text = text;
     }
 

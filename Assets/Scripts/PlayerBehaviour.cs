@@ -11,7 +11,7 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private int numOfBowls = 5;
     [SerializeField] 
-    private float gameTime = 5.0f;
+    private int gameTime = 120;
     
     [Header("Boomerang")]
     [SerializeField]
@@ -59,6 +59,18 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private AnimationClip bowlPutAway;
 
+    [Header("UI")] 
+    [SerializeField] 
+    private PlayerUi playerUi;
+    [SerializeField]
+    private PostGameUI postGameUI;
+
+    [Header("Sounds")]
+    [SerializeField]
+    private AudioClip countDownLow;
+    [SerializeField]
+    private AudioClip countDownHigh;
+    
     [Header("Input")]
     [SerializeField]
     private InputAction movingInputAction;
@@ -75,15 +87,10 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private InputAction pause;
 
-    [Header("UI")] 
-    [SerializeField] 
-    private PlayerUi playerUi;
-    [SerializeField]
-    private PostGameUI postGameUI;
-
     // other components
     private CharacterController _characterController;
     private Camera _cam;
+    private AudioSource _audio;
 
     // private properties
     private Vector2 _velocity = new Vector2();
@@ -123,6 +130,7 @@ public class PlayerBehaviour : MonoBehaviour
         // get other components
         _characterController = GetComponent<CharacterController>();
         _cam = Camera.main;
+        _audio = GetComponent<AudioSource>();
         
         // set up animations
         _animation = GetComponent<Animation>();
@@ -354,9 +362,18 @@ public class PlayerBehaviour : MonoBehaviour
     {
         // wait half a second to make sure the game is loaded
         yield return new WaitForSeconds(0.5f);
+        _audio.clip = countDownLow;
         for (var i = 3; i >= 0; i--)
         {
             playerUi.UpdateCountdown(i);
+            _audio.Play();
+
+            if (i == 0)
+            {
+                _audio.clip = countDownHigh;
+                _audio.Play();
+            }
+
             yield return new WaitForSeconds(1.0f);
         }
         
@@ -375,13 +392,19 @@ public class PlayerBehaviour : MonoBehaviour
     private IEnumerator GameTime()
     {
         var time = gameTime;
-        while (time > 0.0f)
+        while (time > 0)
         {
-            yield return new WaitForSeconds(0.1f);
-            time -= 0.1f;
+            yield return new WaitForSeconds(1f);
+            time -= 1;
             playerUi.UpdateTimeLeft(time);
+
+            if (time > 10 || time < 1) continue;
+            _audio.clip = countDownLow;
+            _audio.Play();
             
-            //TODO play sound in last 10 seconds
+            if (time > 5) continue;
+            _audio.clip = countDownHigh;
+            _audio.Play();
         }
         
         EndGame();
