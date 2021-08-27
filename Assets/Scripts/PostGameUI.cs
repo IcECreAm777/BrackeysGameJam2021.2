@@ -46,6 +46,8 @@ public class PostGameUI : MonoBehaviour
     private int[] _diversityScore;
     private Dictionary<string, int>[] _differentFruits;
 
+    private AudioSource _audio;
+
     // ENGINE METHODS
     
     private void Awake()
@@ -54,6 +56,8 @@ public class PostGameUI : MonoBehaviour
         quitButton.onClick.AddListener(Quit);
         
         buttonArea.SetActive(false);
+
+        _audio = GetComponent<AudioSource>();
     }
 
     // BUTTON METHODS
@@ -134,6 +138,7 @@ public class PostGameUI : MonoBehaviour
                 }
             }
 
+            _audio.Play();
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -171,6 +176,7 @@ public class PostGameUI : MonoBehaviour
             bowlFruitLists[i].options = dropdownData;
             bowlFruitLists[i].gameObject.SetActive(true);
             
+            _audio.Play();
             yield return new WaitForSeconds(0.1f);
         }
         
