@@ -57,16 +57,11 @@ public class BoomerangBehaviour : MonoBehaviour
         
         _dvd.Initialize(direction.normalized * initialSpeed);
         _isInitial = true;
-        _isThrown = true;
+        StartCoroutine(SetIsThrownWithCoolDown());
     }
 
-    public void ReturnToRestPosition(GameObject restPositionObject)
+    public void ReturnToRestPosition()
     {
-        // don't ask why transform1, Rider said this is more efficient and who am I to judge
-        var transform1 = transform;
-        transform1.position = restPositionObject.transform.position;
-        transform1.parent = restPositionObject.transform;
-        
         _rb.velocity = Vector3.zero;
         _dvd.ScaleVelocity(0.0f);
         
@@ -74,6 +69,8 @@ public class BoomerangBehaviour : MonoBehaviour
         closed.SetActive(true);
 
         StopAllCoroutines();
+        
+        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other) 
@@ -97,5 +94,11 @@ public class BoomerangBehaviour : MonoBehaviour
                 fruit.Split();
                 break;
         }
+    }
+
+    private IEnumerator SetIsThrownWithCoolDown()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _isThrown = true;
     }
 }
