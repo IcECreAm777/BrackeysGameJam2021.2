@@ -380,6 +380,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private IEnumerator Bowling()
     {
+        _canSlice = false;
         bowl.SwingBowl();
         _animation.Play("spin");
         animator.SetTrigger(Bowl);
@@ -394,6 +395,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             EndGame();
         }
+
+        _canSlice = true;
     }
 
     private IEnumerator GameStartRoutine()

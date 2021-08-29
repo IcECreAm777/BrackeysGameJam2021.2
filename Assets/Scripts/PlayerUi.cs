@@ -126,6 +126,7 @@ public class PlayerUi : MonoBehaviour
 
     public void PauseGame()
     {
+        if (pauseScreen == null) return;
         Time.timeScale = 0.0f;
         pauseScreen.SetActive(true);
     }

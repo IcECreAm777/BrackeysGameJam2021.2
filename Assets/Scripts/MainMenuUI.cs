@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -28,10 +29,16 @@ public class MainMenuUI : MonoBehaviour
     [Header("How To Play Area")]
     [SerializeField]
     private Button closeHowToPlayButton;
+    [SerializeField]
+    private InputAction leftClick;
+    [SerializeField]
+    private List<GameObject> tutorialImages;
 
     [Header("Credits Area")]
     [SerializeField]
     private Button closeCreditsButton;
+
+    private int _imageIndex;
     
     // ENGINE METHODS
     
@@ -45,6 +52,8 @@ public class MainMenuUI : MonoBehaviour
         
         creditsButton.onClick.AddListener(ShowCredits);
         closeCreditsButton.onClick.AddListener(HideCredits);
+
+        leftClick.performed += context => { NextTutorialImage(); };
     }
     
     // BUTTON METHODS
@@ -73,13 +82,32 @@ public class MainMenuUI : MonoBehaviour
 
     private void ShowHowToPlay()
     {
+        _imageIndex = 0;
+        
+        NextTutorialImage();
+        
+        leftClick.Enable();
+        
         buttonArea.SetActive(false);
         howToPlayArea.SetActive(true);
     }
 
     private void HideHowToPlay()
     {
+        leftClick.Disable();
+
+        foreach (var image in tutorialImages)
+        {
+            image.SetActive(false);
+        }
+        
         buttonArea.SetActive(true);
         howToPlayArea.SetActive(false);
+    }
+
+    private void NextTutorialImage()
+    {
+        if(_imageIndex >= tutorialImages.Count) return;
+        tutorialImages[_imageIndex++].SetActive(true);
     }
 }
