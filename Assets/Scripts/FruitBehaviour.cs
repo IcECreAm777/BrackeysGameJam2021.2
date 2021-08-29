@@ -54,6 +54,11 @@ public class FruitBehaviour : MonoBehaviour
         // fruits can be split after a certain amount of time
         StartCoroutine(AliveLongEnough());
         
+        // safety guard to make sure every fruit is on the correct y level
+        var pos = transform.position;
+        pos.y = 1.0f;
+        transform.position = pos;
+        
         // some fruits are spawning the children earlier so they don't have to spawn them again
         if (_childrenSpawned) return;
         SpawnChildren();
@@ -77,6 +82,7 @@ public class FruitBehaviour : MonoBehaviour
         {
             fruit.SetActive(true);
             fruit.transform.position = position;
+            fruit.transform.rotation = Random.rotation;
             var dir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
             var force = dir.normalized * Random.Range(splittingInfo.splittingMinForce, 
                 splittingInfo.splittingMaxForce);
